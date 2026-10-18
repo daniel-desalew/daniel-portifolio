@@ -62,8 +62,18 @@ const seedData = async () => {
         featured: true,
         order: 3,
       },
+      {
+        title: "Special Boarding Schools Portal",
+        description:
+          "A multilingual education portal with school programs, admissions guidance, resources, and news.",
+        details:
+          "A portal for Ethiopia's special boarding schools, featuring information about programs, admissions, resources, career opportunities, news, and a multilingual experience.",
+        image: "https://sbs-portal-nu.vercel.app/icon.svg?3df467fc17fc410e",
+        tech: [],
+        liveUrl: "https://sbs-portal-nu.vercel.app/",
+      },
     ]);
-    console.log("✅ Seeded 3 projects");
+    console.log("✅ Seeded 4 projects");
 
     // ============================================
     // SKILLS

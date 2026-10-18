@@ -1,82 +1,70 @@
-<<<<<<< HEAD
-# Portfolio
-express personal informetion
-=======
-# Daniel Portfolio — Full-Stack MERN
+# Daniel Desalew Portfolio
 
-A modern, full-stack developer portfolio built with **React + Vite** (frontend) and **Express + MongoDB** (backend).
+A portfolio site built with React and Vite, with an Express and MongoDB API.
 
-## ✨ Features
-- Animated hero section with typewriter effect
-- About me with stats & resume download
-- Featured projects with live/GitHub links
-- Skills grouped by category with animated progress bars
-- Contact form with server-side email handling
-- Admin dashboard with JWT authentication
-- Dark / Light theme toggle
-- Fully responsive design
+## Requirements
 
-## 🛠 Tech Stack
-| Layer    | Tech                                |
-|----------|-------------------------------------|
-| Frontend | React 18, Vite, Framer Motion, CSS  |
-| Backend  | Node.js, Express, MongoDB, Mongoose |
-| Auth     | JWT, bcrypt                         |
-| Email    | Nodemailer                          |
+- Node.js 20 or later
+- MongoDB locally or a MongoDB Atlas database
 
-## 🚀 Quick Start
+## Local development
 
-### Prerequisites
-- Node.js 18+
-- MongoDB running locally or a MongoDB Atlas URI
+1. Install dependencies:
 
-### 1. Clone
-```bash
-git clone https://github.com/YOUR_USERNAME/daniel-portfolio.git
-cd daniel-portfolio
-```
+   ```sh
+   cd client && npm install
+   cd ../server && npm install
+   ```
 
-### 2. Install dependencies
-```bash
-npm install
-cd client && npm install && cd ..
-cd server && npm install && cd ..
-```
+2. Copy `server/.env.example` to `server/.env` and set `MONGO_URI`,
+   `JWT_SECRET`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD`. Generate a unique JWT
+   secret with:
 
-### 3. Configure environment
-```bash
-cp server/.env.example server/.env
-# Edit server/.env with your MongoDB URI, JWT secret, and email credentials
-```
+   ```sh
+   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+   ```
 
-### 4. Seed the database
-```bash
-npm run seed
-```
+   Email settings are optional; without them, contact messages are saved to
+   MongoDB without email notifications.
 
-### 5. Run in development
-```bash
-npm run dev
-# Client: http://localhost:5173
-# Server: http://localhost:5000
-```
+3. Copy `client/.env.example` to `client/.env`. The default API URL works for
+   local development.
 
-## 📦 Deployment
+4. Start the API with `npm run dev --prefix server` and the frontend with
+   `npm run dev --prefix client` in separate terminals.
 
-### Frontend (Vercel)
-1. Import your GitHub repo in [vercel.com](https://vercel.com)
-2. Set **Root Directory** to `client`
-3. Set **Build Command** to `npm run build`
-4. Set **Output Directory** to `dist`
-5. Add environment variable: `VITE_API_URL` = your deployed server URL
+The frontend runs at `http://localhost:5173`; the API runs at
+`http://localhost:5000`.
 
-### Backend (Render / Railway)
-1. Create a new Web Service
-2. Set **Root Directory** to `server`
-3. Set **Build Command** to `npm install`
-4. Set **Start Command** to `node server.js`
-5. Add all environment variables from `server/.env`
+## Deploy the frontend to Vercel
 
-## 📄 License
-MIT
->>>>>>> c5dcbaa (feat: complete portfolio with modern design, all sections, and deployment setup)
+1. Import the repository into Vercel and set **Root Directory** to `client`.
+2. Use `npm run build` as the build command and `dist` as the output directory.
+3. Set `VITE_API_URL` to the deployed API base URL, including `/api`, for
+   example `https://your-api.onrender.com/api`.
+4. Deploy. `client/vercel.json` routes client-side pages back to the React app.
+
+## Deploy the API to Render
+
+1. Create a Web Service for this repository and set **Root Directory** to
+   `server`.
+2. Use `npm install` as the build command and `npm start` as the start command.
+3. Add these environment variables in Render:
+
+   - `NODE_ENV=production`
+   - `MONGO_URI`: your production MongoDB connection string
+   - `JWT_SECRET`: a unique, long random secret
+   - `ADMIN_EMAIL` and `ADMIN_PASSWORD`: the admin login credentials
+   - `CLIENT_URL`: the exact Vercel site origin, such as
+     `https://your-portfolio.vercel.app` (no trailing slash). Multiple allowed
+     origins can be comma-separated.
+   - `EMAIL_USER` and `EMAIL_PASS` (optional): Gmail address and app password
+     for contact-message notifications
+
+4. After the API deploys, set Vercel's `VITE_API_URL` to the Render API URL
+   ending in `/api`, then redeploy the frontend.
+5. Verify the API is healthy at `https://your-api.onrender.com/api/health`.
+
+Do not run `npm run seed` against a production database: the seed script deletes
+existing projects, skills, profile data, and users before inserting sample data.
+Manage production portfolio content through the admin interface instead.

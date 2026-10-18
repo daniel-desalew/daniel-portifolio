@@ -13,12 +13,24 @@ import messageRoutes from "./routes/messageRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
-connectDB();
+const allowedOrigins = (process.env.CLIENT_URL || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 app.use(helmet());
-app.use(cors({ origin: process.env.CLIENT_URL })); // only your frontend may call the API
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Origin is not allowed by CORS"));
+    },
+  }),
+);
 app.use(express.json({ limit: "1mb" }));
-app.use(morgan("dev"));
+app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use("/api", apiLimiter);
 
 app.get("/api/health", (req, res) => res.json({ ok: true }));
@@ -31,4 +43,5 @@ app.use("/api/auth", authRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
+await connectDB();
 app.listen(process.env.PORT || 5000, () => console.log("API running"));

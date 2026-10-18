@@ -36,7 +36,21 @@ const fallbackProjects = [
     liveUrl: "https://taskflow-daniel.vercel.app",
     githubUrl: "https://github.com/daniel-desalew/taskflow",
   },
+  {
+    _id: "special-boarding-schools-portal",
+    title: "Special Boarding Schools Portal",
+    description:
+      "A multilingual education portal with school programs, admissions guidance, resources, and news.",
+    image: "https://sbs-portal-nu.vercel.app/icon.svg?3df467fc17fc410e",
+    techStack: [],
+    liveUrl: "https://sbs-portal-nu.vercel.app/",
+    externalOnly: true,
+  },
 ];
+
+const sbsPortalProject = fallbackProjects.find(
+  (project) => project.externalOnly,
+);
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
@@ -46,7 +60,14 @@ export default function Projects() {
     api
       .get("/projects")
       .then((res) => {
-        setProjects(res.data.length > 0 ? res.data : fallbackProjects);
+        const projects =
+          res.data.length > 0 ? res.data : fallbackProjects;
+        const hasSbsPortal = projects.some(
+          (project) => project.liveUrl === sbsPortalProject.liveUrl,
+        );
+        setProjects(
+          hasSbsPortal ? projects : [...projects, sbsPortalProject],
+        );
         setLoading(false);
       })
       .catch(() => {
@@ -138,22 +159,43 @@ export default function Projects() {
                       </span>
                     ))}
                   </div>
-                  <Link
-                    to={`/project/${project._id}`}
-                    className="project-detail-link"
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 6,
-                      marginTop: 16,
-                      color: "var(--accent)",
-                      fontWeight: 600,
-                      fontSize: "0.9rem",
-                      transition: "gap 0.2s ease",
-                    }}
-                  >
-                    View Details <FiArrowRight />
-                  </Link>
+                  {project.externalOnly ? (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="project-detail-link"
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        marginTop: 16,
+                        color: "var(--accent)",
+                        fontWeight: 600,
+                        fontSize: "0.9rem",
+                        transition: "gap 0.2s ease",
+                      }}
+                    >
+                      Visit Website <FiArrowRight />
+                    </a>
+                  ) : (
+                    <Link
+                      to={`/project/${project._id}`}
+                      className="project-detail-link"
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        marginTop: 16,
+                        color: "var(--accent)",
+                        fontWeight: 600,
+                        fontSize: "0.9rem",
+                        transition: "gap 0.2s ease",
+                      }}
+                    >
+                      View Details <FiArrowRight />
+                    </Link>
+                  )}
                 </div>
               </motion.div>
             ))}
