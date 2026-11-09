@@ -1,11 +1,11 @@
 # Daniel Desalew Portfolio
 
-A portfolio site built with React and Vite, with an Express and MongoDB API.
+A portfolio site built with React and Vite, with an Express API backed by Neon PostgreSQL.
 
 ## Requirements
 
 - Node.js 20 or later
-- MongoDB locally or a MongoDB Atlas database
+- A Neon PostgreSQL project
 
 ## Local development
 
@@ -16,7 +16,8 @@ A portfolio site built with React and Vite, with an Express and MongoDB API.
    cd ../server && npm install
    ```
 
-2. Copy `server/.env.example` to `server/.env` and set `MONGO_URI`,
+2. Copy `server/.env.example` to `server/.env`. Create a Neon project, then set
+   `DATABASE_URL` to its pooled connection string (it must use SSL), along with
    `JWT_SECRET`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD`. Generate a unique JWT
    secret with:
 
@@ -25,7 +26,7 @@ A portfolio site built with React and Vite, with an Express and MongoDB API.
    ```
 
    Email settings are optional; without them, contact messages are saved to
-   MongoDB without email notifications.
+   PostgreSQL without email notifications.
 
 3. Copy `client/.env.example` to `client/.env`. The default API URL works for
    local development.
@@ -52,7 +53,7 @@ The frontend runs at `http://localhost:5173`; the API runs at
 3. Add these environment variables in Render:
 
    - `NODE_ENV=production`
-   - `MONGO_URI`: your production MongoDB connection string
+   - `DATABASE_URL`: your Neon PostgreSQL pooled connection string with SSL
    - `JWT_SECRET`: a unique, long random secret
    - `ADMIN_EMAIL` and `ADMIN_PASSWORD`: the admin login credentials
    - `CLIENT_URL`: the exact Vercel site origin, such as
@@ -65,6 +66,10 @@ The frontend runs at `http://localhost:5173`; the API runs at
    ending in `/api`, then redeploy the frontend.
 5. Verify the API is healthy at `https://your-api.onrender.com/api/health`.
 
-Do not run `npm run seed` against a production database: the seed script deletes
-existing projects, skills, profile data, and users before inserting sample data.
-Manage production portfolio content through the admin interface instead.
+The API creates its tables on startup. The seed command replaces all projects,
+skills, and profile data, so do not run `npm run seed` against a production
+database. Contact messages are preserved by the seed command. Manage production
+portfolio content through the admin interface instead.
+
+Switching from MongoDB does not transfer existing data. Export and migrate any
+MongoDB records you need before deploying with the Neon connection string.

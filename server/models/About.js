@@ -1,19 +1,26 @@
-import mongoose from "mongoose";
+import { query } from "../config/db.js";
 
-export default mongoose.model(
-  "About",
-  new mongoose.Schema({
-    name: String,
-    title: String,
-    location: String,
-    bio: String,
-    photo: String,
-    email: String,
-    phone: String,
-    resumeUrl: String,
-    github: String,
-    linkedin: String,
-    twitter: String,
-    facts: [{ label: String, value: String }],
-  }),
-);
+export default async function findAbout() {
+  const result = await query(
+    `SELECT
+       id::text AS "_id",
+       name,
+       title,
+       location,
+       bio,
+       photo,
+       email,
+       phone,
+       resume_url AS "resumeUrl",
+       github,
+       linkedin,
+       twitter,
+       website,
+       facts,
+       stats
+     FROM about
+     ORDER BY id ASC
+     LIMIT 1`,
+  );
+  return result.rows[0] ?? null;
+}

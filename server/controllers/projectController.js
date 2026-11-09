@@ -1,8 +1,14 @@
-import Project from "../models/Project.js";
+import {
+  createProject as insertProject,
+  deleteProjectById,
+  findProjectById,
+  findProjects,
+  updateProjectById,
+} from "../models/Project.js";
 
 export const getProjects = async (req, res, next) => {
   try {
-    res.json(await Project.find().sort("-createdAt"));
+    res.json(await findProjects());
   } catch (e) {
     next(e);
   }
@@ -10,7 +16,7 @@ export const getProjects = async (req, res, next) => {
 
 export const getProject = async (req, res, next) => {
   try {
-    const p = await Project.findById(req.params.id);
+    const p = await findProjectById(req.params.id);
     if (!p) return res.status(404).json({ message: "Project not found" });
     res.json(p);
   } catch (e) {
@@ -20,7 +26,7 @@ export const getProject = async (req, res, next) => {
 
 export const createProject = async (req, res, next) => {
   try {
-    res.status(201).json(await Project.create(req.body));
+    res.status(201).json(await insertProject(req.body));
   } catch (e) {
     next(e);
   }
@@ -28,10 +34,7 @@ export const createProject = async (req, res, next) => {
 
 export const updateProject = async (req, res, next) => {
   try {
-    const p = await Project.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const p = await updateProjectById(req.params.id, req.body);
     if (!p) return res.status(404).json({ message: "Project not found" });
     res.json(p);
   } catch (e) {
@@ -41,7 +44,7 @@ export const updateProject = async (req, res, next) => {
 
 export const deleteProject = async (req, res, next) => {
   try {
-    await Project.findByIdAndDelete(req.params.id);
+    await deleteProjectById(req.params.id);
     res.json({ message: "Deleted" });
   } catch (e) {
     next(e);

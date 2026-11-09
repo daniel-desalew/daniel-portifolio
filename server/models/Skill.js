@@ -1,10 +1,10 @@
-import mongoose from "mongoose";
+import { query } from "../config/db.js";
 
-export default mongoose.model(
-  "Skill",
-  new mongoose.Schema({
-    name: { type: String, required: true },
-    category: { type: String, default: "General" }, // Frontend, Backend, Tools...
-    level: { type: Number, min: 0, max: 100, default: 80 },
-  }),
-);
+export default async function findSkills() {
+  const result = await query(
+    `SELECT id::text AS "_id", name, category, level, sort_order AS "order"
+     FROM skills
+     ORDER BY sort_order ASC, id ASC`,
+  );
+  return result.rows;
+}
